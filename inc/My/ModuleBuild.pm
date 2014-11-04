@@ -2,7 +2,7 @@ package My::ModuleBuild;
 
 use strict;
 use warnings;
-use v5.10;
+use 5.010;
 use FFI::CheckLib;
 use base qw( Module::Build );
 

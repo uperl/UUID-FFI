@@ -2,7 +2,7 @@ package UUID::FFI;
 
 use strict;
 use warnings;
-use v5.10;
+use 5.010;
 use FFI::Raw;
 use FFI::CheckLib;
 use Carp qw( croak );
