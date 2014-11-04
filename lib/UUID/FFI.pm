@@ -11,6 +11,7 @@ use overload '""' => sub { shift->as_hex };
 use overload fallback => 1;
 
 # TODO: uuid_time
+# TODO: as_bin or similar
 # TODO: overload <=>
 
 # ABSTRACT: Universally Unique Identifiers FFI style
