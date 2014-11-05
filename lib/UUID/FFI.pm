@@ -7,9 +7,9 @@ use FFI::Raw;
 use FFI::CheckLib;
 use Carp qw( croak );
 use base qw( FFI::Raw::Ptr );
-use overload '<=>' => sub { $_[0]->compare($_[1]) };
-use overload '""' => sub { shift->as_hex };
-use overload fallback => 1;
+use overload '<=>' => sub { $_[0]->compare($_[1]) },
+             '""'  => sub { shift->as_hex         },
+             fallback => 1;
 
 # TODO: uuid_time
 # TODO: as_bin or similar
@@ -218,11 +218,14 @@ sub as_hex
 =head2 compare
 
  my $cmp = $uuid1->compare($uuid2);
+ my $cmp = $uuid1 <=> $uuid2;
  my @sorted_uuids = sort { $a->compare($b) } @uuid;
+ my @sorted_uuids = sort { $a <=> $b } @uuid;
 
 Returns an integer less than, equal to or greater than zero
 if C<$uuid1> is found, respectively, to be lexicographically
-less than, equal, or greater that C<$uuid2>.
+less than, equal, or greater that C<$uuid2>.  The C<E<lt>=E<gt>>
+is also overloaded so you can use that too.
 
 =cut
 
