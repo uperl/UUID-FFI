@@ -7,12 +7,12 @@ use FFI::Raw;
 use FFI::CheckLib;
 use Carp qw( croak );
 use base qw( FFI::Raw::Ptr );
+use overload '<=>' => sub { $_[0]->compare($_[1]) };
 use overload '""' => sub { shift->as_hex };
 use overload fallback => 1;
 
 # TODO: uuid_time
 # TODO: as_bin or similar
-# TODO: overload <=>
 
 # ABSTRACT: Universally Unique Identifiers FFI style
 # VERSION
