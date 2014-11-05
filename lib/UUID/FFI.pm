@@ -5,13 +5,13 @@ use warnings;
 use 5.010;
 use FFI::Raw;
 use FFI::CheckLib;
+use FFI::Util;
 use Carp qw( croak );
 use base qw( FFI::Raw::Ptr );
 use overload '<=>' => sub { $_[0]->compare($_[1]) },
              '""'  => sub { shift->as_hex         },
              fallback => 1;
 
-# TODO: uuid_time
 # TODO: as_bin or similar
 
 # ABSTRACT: Universally Unique Identifiers FFI style
@@ -32,8 +32,9 @@ for objects that may be accessible beyond the local system
 
 use constant {
   _lib => find_lib( lib => 'uuid' ),
-  
 };
+
+use constant _time_t => eval 'FFI::Raw::'.FFI::Util::_lookup_type("time_t");
 
 use constant _malloc => FFI::Raw->new(
   undef, 'malloc',
@@ -93,6 +94,12 @@ use constant _variant => FFI::Raw->new(
   _lib, 'uuid_variant',
   FFI::Raw::int,
   FFI::Raw::ptr,
+);
+
+use constant _time => FFI::Raw->new(
+  _lib, 'uuid_time',
+  _time_t,
+  FFI::Raw::ptr, FFI::Raw::ptr,
 );
 
 =head1 CONSTRUCTORS
@@ -271,6 +278,22 @@ sub variant
   my($self) = @_;
   my $r = _variant->call($self);
   $variant[$r] // croak "illegal varient: $r";
+}
+
+=head2 time
+
+ my $time = $uuid->time;
+
+Returns the time the UUID was generated.  The value returned is in seconds
+since the UNIX epoch, so is compatible with perl builtins like L<time|perlfunc#time> and
+C<localtime|perlfunc#localtime>.
+
+=cut
+
+sub time
+{
+  my($self) =@_;
+  _time->call($self, undef);
 }
 
 sub DESTROY

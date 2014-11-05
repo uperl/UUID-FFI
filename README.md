@@ -65,11 +65,14 @@ Returns the hex representation of the UUID.  The stringification of
 ## compare
 
     my $cmp = $uuid1->compare($uuid2);
+    my $cmp = $uuid1 <=> $uuid2;
     my @sorted_uuids = sort { $a->compare($b) } @uuid;
+    my @sorted_uuids = sort { $a <=> $b } @uuid;
 
 Returns an integer less than, equal to or greater than zero
 if `$uuid1` is found, respectively, to be lexicographically
-less than, equal, or greater that `$uuid2`.
+less than, equal, or greater that `$uuid2`.  The `<=>`
+is also overloaded so you can use that too.
 
 ## type
 
@@ -83,6 +86,14 @@ if it can be identified.
     my $variant = $uuid->variant
 
 Returns the variant of the UUID, either `ncs`, `dce`, `microsoft` or `other`.
+
+## time
+
+    my $time = $uuid->time;
+
+Returns the time the UUID was generated.  The value returned is in seconds
+since the UNIX epoch, so is compatible with perl builtins like [time](https://metacpan.org/pod/perlfunc#time) and
+`localtime|perlfunc#localtime`.
 
 # AUTHOR
 
