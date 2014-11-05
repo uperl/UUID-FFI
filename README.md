@@ -66,8 +66,8 @@ Returns the hex representation of the UUID.  The stringification of
 
     my $cmp = $uuid1->compare($uuid2);
     my $cmp = $uuid1 <=> $uuid2;
-    my @sorted_uuids = sort { $a->compare($b) } @uuid;
-    my @sorted_uuids = sort { $a <=> $b } @uuid;
+    my @sorted_uuids = sort { $a->compare($b) } @uuids;
+    my @sorted_uuids = sort { $a <=> $b } @uuids;
 
 Returns an integer less than, equal to or greater than zero
 if `$uuid1` is found, respectively, to be lexicographically
