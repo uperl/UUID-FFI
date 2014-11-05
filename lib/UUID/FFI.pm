@@ -3,9 +3,9 @@ package UUID::FFI;
 use strict;
 use warnings;
 use 5.010;
-use FFI::Raw;
-use FFI::CheckLib;
-use FFI::Util;
+use FFI::Raw ();
+use FFI::CheckLib qw( find_lib );
+use FFI::Util ();
 use Carp qw( croak );
 use base qw( FFI::Raw::Ptr );
 use overload '<=>' => sub { $_[0]->compare($_[1]) },
