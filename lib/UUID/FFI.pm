@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use 5.010;
 use FFI::Raw ();
-use FFI::CheckLib qw( find_lib );
+use FFI::CheckLib qw( find_lib_or_exit );
 use FFI::Util ();
 use Carp qw( croak );
 use base qw( FFI::Raw::Ptr );
@@ -31,7 +31,7 @@ for objects that may be accessible beyond the local system
 =cut
 
 use constant {
-  _lib => find_lib( lib => 'uuid' ),
+  _lib => find_lib_or_exit( lib => 'uuid' ),
 };
 
 use constant _time_t => eval 'FFI::Raw::'.FFI::Util::_lookup_type("time_t");
