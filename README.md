@@ -5,7 +5,7 @@ Universally Unique Identifiers FFI style
 # SYNOPSIS
 
     my $uuid = UUID::FFI->new_random;
-    say $uuid->as_hex;
+    print $uuid->as_hex, "\n";
 
 # DESCRIPTION
 
