@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - support perl 5.8
 
 0.03      2015-01-13 12:00:02 -0500
   - migrate to FFI::Platypus

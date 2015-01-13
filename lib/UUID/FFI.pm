@@ -2,7 +2,6 @@ package UUID::FFI;
 
 use strict;
 use warnings;
-use 5.010;
 use FFI::Platypus;
 use FFI::Platypus::Memory ();
 use FFI::CheckLib ();
@@ -19,7 +18,7 @@ use overload '<=>' => sub { $_[0]->compare($_[1]) },
 =head1 SYNOPSIS
 
  my $uuid = UUID::FFI->new_random;
- say $uuid->as_hex;
+ print $uuid->as_hex, "\n";
 
 =head1 DESCRIPTION
 
@@ -198,7 +197,7 @@ sub type
 {
   my($self) = @_;
   my $r = _type($$self);
-  $type_map{$r} // croak "illegal type: $r";
+  $type_map{$r} || croak "illegal type: $r";
 }
 
 my @variant = qw( ncs dce microsoft other );
@@ -215,7 +214,7 @@ sub variant
 {
   my($self) = @_;
   my $r = _variant($$self);
-  $variant[$r] // croak "illegal varient: $r";
+  $variant[$r] || croak "illegal varient: $r";
 }
 
 =head2 time
