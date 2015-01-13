@@ -3,11 +3,10 @@ package UUID::FFI;
 use strict;
 use warnings;
 use 5.010;
-use FFI::Raw ();
-use FFI::CheckLib qw( find_lib_or_exit );
-use FFI::Util ();
+use FFI::Platypus;
+use FFI::Platypus::Memory ();
+use FFI::CheckLib ();
 use Carp qw( croak );
-use base qw( FFI::Raw::Ptr );
 use overload '<=>' => sub { $_[0]->compare($_[1]) },
              '""'  => sub { shift->as_hex         },
              fallback => 1;
@@ -30,77 +29,24 @@ for objects that may be accessible beyond the local system
 
 =cut
 
-use constant {
-  _lib => find_lib_or_exit( lib => 'uuid' ),
-};
+*_malloc = \&FFI::Platypus::Memory::malloc;
+*_free   = \&FFI::Platypus::Memory::free;
 
-use constant _time_t => eval 'FFI::Raw::'.FFI::Util::_lookup_type("time_t");
+my $ffi = FFI::Platypus->new;
 
-use constant _malloc => FFI::Raw->new(
-  undef, 'malloc',
-  FFI::Raw::ptr,
-  FFI::Raw::int,
-);
+$ffi->lib(FFI::CheckLib::find_lib_or_die(lib => 'uuid'));
 
-use constant _free => FFI::Raw->new(
-  undef, 'free',
-  FFI::Raw::void,
-  FFI::Raw::ptr,
-);
-
-use constant _generate_random => FFI::Raw->new(
-  _lib, 'uuid_generate_random',
-  FFI::Raw::void,
-  FFI::Raw::ptr,
-);
-
-use constant _generate_time => FFI::Raw->new(
-  _lib, 'uuid_generate_time',
-  FFI::Raw::void,
-  FFI::Raw::ptr,
-);
-
-use constant _unparse => FFI::Raw->new(
-  _lib, 'uuid_unparse',
-  FFI::Raw::void,
-  FFI::Raw::ptr, FFI::Raw::ptr,
-);
-
-use constant _parse => FFI::Raw->new(
-  _lib, 'uuid_parse',
-  FFI::Raw::int,
-  FFI::Raw::str, FFI::Raw::ptr,
-);
-
-use constant _copy => FFI::Raw->new(
-  _lib, 'uuid_copy',
-  FFI::Raw::void,
-  FFI::Raw::ptr, FFI::Raw::ptr,
-);
-
-use constant _clear => FFI::Raw->new(
-  _lib, 'uuid_clear',
-  FFI::Raw::void,
-  FFI::Raw::ptr,
-);
-
-use constant _type => FFI::Raw->new(
-  _lib, 'uuid_type',
-  FFI::Raw::int,
-  FFI::Raw::ptr,
-);
-
-use constant _variant => FFI::Raw->new(
-  _lib, 'uuid_variant',
-  FFI::Raw::int,
-  FFI::Raw::ptr,
-);
-
-use constant _time => FFI::Raw->new(
-  _lib, 'uuid_time',
-  _time_t,
-  FFI::Raw::ptr, FFI::Raw::ptr,
-);
+$ffi->attach( [uuid_generate_random => '_generate_random'] => ['pointer']            => 'void'   => '$');
+$ffi->attach( [uuid_generate_time   => '_generate_time']   => ['pointer']            => 'void'   => '$');
+$ffi->attach( [uuid_unparse         => '_unparse']         => ['pointer', 'pointer'] => 'void'   => '$$');
+$ffi->attach( [uuid_parse           => '_parse']           => ['string', 'pointer']  => 'int'    => '$$');
+$ffi->attach( [uuid_copy            => '_copy']            => ['pointer', 'pointer'] => 'void'   => '$$');
+$ffi->attach( [uuid_clear           => '_clear']           => ['pointer']            => 'void'   => '$');
+$ffi->attach( [uuid_type            => '_type']            => ['pointer']            => 'int'    => '$');
+$ffi->attach( [uuid_variant         => '_variant']         => ['pointer']            => 'int'    => '$');
+$ffi->attach( [uuid_time            => '_time']            => ['pointer','pointer']  => 'time_t' => '$$');
+$ffi->attach( [uuid_is_null         => '_is_null']         => ['pointer']            => 'int'    => '$');
+$ffi->attach( [uuid_compare         => '_compare']         => ['pointer', 'pointer'] => 'int'    => '$$');
 
 =head1 CONSTRUCTORS
 
@@ -116,8 +62,8 @@ sub new
 {
   my($class, $hex) = @_;
   croak "usage: UUID::FFI->new($hex)" unless $hex;
-  my $self = bless \_malloc->call(16), $class;
-  my $r = _parse->call($hex, $self);
+  my $self = bless \_malloc(16), $class;
+  my $r = _parse($hex, $$self);
   croak "$hex is not a valid hex UUID" if $r != 0; 
   $self;
 }
@@ -133,8 +79,8 @@ Create a new UUID object with a randomly generated value.
 sub new_random
 {
   my($class) = @_;
-  my $self = bless \_malloc->call(16), $class;
-  _generate_random->call($self);
+  my $self = bless \_malloc(16), $class;
+  _generate_random->($$self);
   $self;
 }
 
@@ -150,8 +96,8 @@ This can leak information about when and where the UUID was generated.
 sub new_time
 {
   my($class) = @_;
-  my $self = bless \_malloc->call(16), $class;
-  _generate_time->call($self);
+  my $self = bless \_malloc(16), $class;
+  _generate_time($$self);
   $self;
 }
 
@@ -166,8 +112,8 @@ Create a new UUID C<NULL UUID>  object (all zeros).
 sub new_null
 {
   my($class) = @_;
-  my $self = bless \_malloc->call(16), $class;
-  _clear->call($self);
+  my $self = bless \_malloc(16), $class;
+  _clear($$self);
   $self;
 }
 
@@ -181,11 +127,7 @@ Returns true if the UUID is C<NULL UUID>.
 
 =cut
 
-*is_null = FFI::Raw->new(
-  _lib, 'uuid_is_null',
-  FFI::Raw::int,
-  FFI::Raw::ptr,
-)->coderef;
+sub is_null { _is_null(${$_[0]}) }
 
 =head2 clone
 
@@ -198,8 +140,8 @@ Create a new UUID object with the identical value to the original.
 sub clone
 {
   my($self) = @_;
-  my $other = bless \_malloc->call(16), ref $self;
-  _copy->call($other, $self);
+  my $other = bless \_malloc(16), ref $self;
+  _copy($$other, $$self);
   $other;
 }
 
@@ -218,7 +160,7 @@ sub as_hex
   my($self) = @_;
   my $data = "x" x 36;
   my $ptr = unpack 'L!', pack 'P', $data;
-  _unparse->call($self, $ptr);
+  _unparse($$self, $ptr);
   $data;
 }
 
@@ -236,11 +178,7 @@ is also overloaded so you can use that too.
 
 =cut
 
-*compare = FFI::Raw->new(
-  _lib, 'uuid_compare',
-  FFI::Raw::int,
-  FFI::Raw::ptr, FFI::Raw::ptr,
-)->coderef;
+sub compare { _compare( ${$_[0]}, ${$_[1]} ) }
 
 my %type_map = (
   1 => 'time',
@@ -259,7 +197,7 @@ if it can be identified.
 sub type
 {
   my($self) = @_;
-  my $r = _type->call($self);
+  my $r = _type($$self);
   $type_map{$r} // croak "illegal type: $r";
 }
 
@@ -276,7 +214,7 @@ Returns the variant of the UUID, either C<ncs>, C<dce>, C<microsoft> or C<other>
 sub variant
 {
   my($self) = @_;
-  my $r = _variant->call($self);
+  my $r = _variant($$self);
   $variant[$r] // croak "illegal varient: $r";
 }
 
@@ -293,13 +231,13 @@ C<localtime|perlfunc#localtime>.
 sub time
 {
   my($self) =@_;
-  _time->call($self, undef);
+  _time($$self, undef);
 }
 
 sub DESTROY
 {
   my($self) = @_;
-  _free->call($self);
+  _free($$self);
 }
 
 1;

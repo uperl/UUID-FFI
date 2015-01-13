@@ -1,5 +1,4 @@
 FFI::CheckLib
-FFI::Raw
-FFI::Util
+FFI::Platypus
 Module::Build
 Test::More
