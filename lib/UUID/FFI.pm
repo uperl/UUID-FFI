@@ -223,7 +223,7 @@ sub variant
 
 Returns the time the UUID was generated.  The value returned is in seconds
 since the UNIX epoch, so is compatible with perl builtins like L<time|perlfunc#time> and
-C<localtime|perlfunc#localtime>.
+L<localtime|perlfunc#localtime>.
 
 =cut
 
