@@ -229,7 +229,7 @@ C<localtime|perlfunc#localtime>.
 
 sub time
 {
-  my($self) =@_;
+  my($self) = @_;
   _time($$self, undef);
 }
 
