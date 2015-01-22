@@ -2,6 +2,11 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.05      2015-01-22 06:42:44 -0500
+  - First CPAN release
+  - Very minor documentation tweak
+  - Functionally identical to 0.04
+
 0.04      2015-01-13 12:21:02 -0500
   - support perl 5.8
 

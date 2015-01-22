@@ -93,7 +93,7 @@ Returns the variant of the UUID, either `ncs`, `dce`, `microsoft` or `other`.
 
 Returns the time the UUID was generated.  The value returned is in seconds
 since the UNIX epoch, so is compatible with perl builtins like [time](https://metacpan.org/pod/perlfunc#time) and
-`localtime|perlfunc#localtime`.
+[localtime](https://metacpan.org/pod/perlfunc#localtime).
 
 # AUTHOR
 
