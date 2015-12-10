@@ -1,4 +1,4 @@
-# UUID::FFI
+# UUID::FFI [![Build Status](https://secure.travis-ci.org/plicease/UUID-FFI.png)](http://travis-ci.org/plicease/UUID-FFI)
 
 Universally Unique Identifiers FFI style
 
@@ -97,7 +97,7 @@ since the UNIX epoch, so is compatible with perl builtins like [time](https://me
 
 # AUTHOR
 
-Graham Ollis <plicease@cpan.org>
+Graham Ollis &lt;plicease@cpan.org>
 
 # COPYRIGHT AND LICENSE
 
