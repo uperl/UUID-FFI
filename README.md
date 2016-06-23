@@ -97,7 +97,7 @@ since the UNIX epoch, so is compatible with perl builtins like [time](https://me
 
 # AUTHOR
 
-Graham Ollis &lt;plicease@cpan.org>
+Graham Ollis <plicease@cpan.org>
 
 # COPYRIGHT AND LICENSE
 
