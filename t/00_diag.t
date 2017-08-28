@@ -10,9 +10,9 @@ my %modules;
 my $post_diag;
 
 $modules{$_} = $_ for qw(
+  ExtUtils::MakeMaker
   FFI::CheckLib
   FFI::Platypus
-  Module::Build
   Test2::V0
 );
 
