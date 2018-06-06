@@ -28,24 +28,21 @@ for objects that may be accessible beyond the local system
 
 =cut
 
-*_malloc = \&FFI::Platypus::Memory::malloc;
-*_free   = \&FFI::Platypus::Memory::free;
-
 my $ffi = FFI::Platypus->new;
 
 $ffi->lib(FFI::CheckLib::find_lib_or_die(lib => 'uuid'));
 
-$ffi->attach( [uuid_generate_random => '_generate_random'] => ['pointer']            => 'void'   => '$');
-$ffi->attach( [uuid_generate_time   => '_generate_time']   => ['pointer']            => 'void'   => '$');
-$ffi->attach( [uuid_unparse         => '_unparse']         => ['pointer', 'pointer'] => 'void'   => '$$');
-$ffi->attach( [uuid_parse           => '_parse']           => ['string', 'pointer']  => 'int'    => '$$');
-$ffi->attach( [uuid_copy            => '_copy']            => ['pointer', 'pointer'] => 'void'   => '$$');
-$ffi->attach( [uuid_clear           => '_clear']           => ['pointer']            => 'void'   => '$');
-$ffi->attach( [uuid_type            => '_type']            => ['pointer']            => 'int'    => '$');
-$ffi->attach( [uuid_variant         => '_variant']         => ['pointer']            => 'int'    => '$');
-$ffi->attach( [uuid_time            => '_time']            => ['pointer','pointer']  => 'time_t' => '$$');
-$ffi->attach( [uuid_is_null         => '_is_null']         => ['pointer']            => 'int'    => '$');
-$ffi->attach( [uuid_compare         => '_compare']         => ['pointer', 'pointer'] => 'int'    => '$$');
+$ffi->attach( [uuid_generate_random => '_generate_random'] => ['pointer']            => 'void'   => '$'  );
+$ffi->attach( [uuid_generate_time   => '_generate_time']   => ['pointer']            => 'void'   => '$'  );
+$ffi->attach( [uuid_unparse         => '_unparse']         => ['pointer', 'pointer'] => 'void'   => '$$' );
+$ffi->attach( [uuid_parse           => '_parse']           => ['string',  'pointer'] => 'int'    => '$$' );
+$ffi->attach( [uuid_copy            => '_copy']            => ['pointer', 'pointer'] => 'void'   => '$$' );
+$ffi->attach( [uuid_clear           => '_clear']           => ['pointer']            => 'void'   => '$'  );
+$ffi->attach( [uuid_type            => '_type']            => ['pointer']            => 'int'    => '$'  );
+$ffi->attach( [uuid_variant         => '_variant']         => ['pointer']            => 'int'    => '$'  );
+$ffi->attach( [uuid_time            => '_time']            => ['pointer', 'pointer'] => 'time_t' => '$$' );
+$ffi->attach( [uuid_is_null         => '_is_null']         => ['pointer']            => 'int'    => '$'  );
+$ffi->attach( [uuid_compare         => '_compare']         => ['pointer', 'pointer'] => 'int'    => '$$' );
 
 =head1 CONSTRUCTORS
 
@@ -61,7 +58,7 @@ sub new
 {
   my($class, $hex) = @_;
   croak "usage: UUID::FFI->new($hex)" unless $hex;
-  my $self = bless \_malloc(16), $class;
+  my $self = bless \FFI::Platypus::Memory::malloc(16), $class;
   my $r = _parse($hex, $$self);
   croak "$hex is not a valid hex UUID" if $r != 0; 
   $self;
@@ -78,7 +75,7 @@ Create a new UUID object with a randomly generated value.
 sub new_random
 {
   my($class) = @_;
-  my $self = bless \_malloc(16), $class;
+  my $self = bless \FFI::Platypus::Memory::malloc(16), $class;
   _generate_random->($$self);
   $self;
 }
@@ -95,7 +92,7 @@ This can leak information about when and where the UUID was generated.
 sub new_time
 {
   my($class) = @_;
-  my $self = bless \_malloc(16), $class;
+  my $self = bless \FFI::Platypus::Memory::malloc(16), $class;
   _generate_time($$self);
   $self;
 }
@@ -111,7 +108,7 @@ Create a new UUID C<NULL UUID>  object (all zeros).
 sub new_null
 {
   my($class) = @_;
-  my $self = bless \_malloc(16), $class;
+  my $self = bless \FFI::Platypus::Memory::malloc(16), $class;
   _clear($$self);
   $self;
 }
@@ -139,7 +136,7 @@ Create a new UUID object with the identical value to the original.
 sub clone
 {
   my($self) = @_;
-  my $other = bless \_malloc(16), ref $self;
+  my $other = bless \FFI::Platypus::Memory::malloc(16), ref $self;
   _copy($$other, $$self);
   $other;
 }
@@ -236,7 +233,7 @@ sub time
 sub DESTROY
 {
   my($self) = @_;
-  _free($$self);
+  FFI::Platypus::Memory::free($$self);
 }
 
 1;
