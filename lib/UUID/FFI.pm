@@ -2,7 +2,7 @@ package UUID::FFI;
 
 use strict;
 use warnings;
-use FFI::Platypus;
+use FFI::Platypus 0.56;
 use FFI::Platypus::Memory ();
 use FFI::CheckLib ();
 use Carp qw( croak );
@@ -30,7 +30,12 @@ for objects that may be accessible beyond the local system
 
 my $ffi = FFI::Platypus->new;
 
-$ffi->lib(FFI::CheckLib::find_lib_or_die(lib => 'uuid'));
+$ffi->lib(sub {
+  my $lib = FFI::CheckLib::find_lib(lib => 'uuid');
+  return $lib if $lib;
+  require Alien::libuuid;
+  Alien::libuuid->dynamic_libs;
+});
 
 $ffi->attach( [uuid_generate_random => '_generate_random'] => ['pointer']            => 'void'   => '$'  );
 $ffi->attach( [uuid_generate_time   => '_generate_time']   => ['pointer']            => 'void'   => '$'  );
