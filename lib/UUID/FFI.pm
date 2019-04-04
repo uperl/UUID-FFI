@@ -2,6 +2,7 @@ package UUID::FFI;
 
 use strict;
 use warnings;
+use 5.008001;
 use FFI::Platypus 0.56;
 use FFI::Platypus::Memory ();
 use FFI::CheckLib ();
