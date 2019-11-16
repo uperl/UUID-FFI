@@ -19,7 +19,7 @@ sub myWriteMakefile
   {
     $args{PREREQ_PM}->{'Alien::libuuid'} = 0;
   }
-  
+
   WriteMakefile(%args);
 }
 

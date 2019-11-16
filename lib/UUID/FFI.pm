@@ -66,7 +66,7 @@ sub new
   croak "usage: UUID::FFI->new($hex)" unless $hex;
   my $self = bless \FFI::Platypus::Memory::malloc(16), $class;
   my $r = _parse($hex, $$self);
-  croak "$hex is not a valid hex UUID" if $r != 0; 
+  croak "$hex is not a valid hex UUID" if $r != 0;
   $self;
 }
 
