@@ -3,7 +3,7 @@ package UUID::FFI;
 use strict;
 use warnings;
 use 5.008001;
-use FFI::Platypus 0.56;
+use FFI::Platypus 1.00;
 use FFI::Platypus::Memory ();
 use FFI::CheckLib ();
 use Carp qw( croak );
@@ -29,7 +29,7 @@ for objects that may be accessible beyond the local system
 
 =cut
 
-my $ffi = FFI::Platypus->new;
+my $ffi = FFI::Platypus->new( api => 1 );
 
 $ffi->lib(sub {
   my $lib = FFI::CheckLib::find_lib(lib => 'uuid');
