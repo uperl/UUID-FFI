@@ -9,7 +9,7 @@ use FFI::CheckLib ();
 use Carp qw( croak );
 use overload '<=>' => sub { $_[0]->compare($_[1]) },
              '""'  => sub { shift->as_hex         },
-             fallback => 1;
+             bool => sub { 1 }, fallback => 1;
 
 # TODO: as_bin or similar
 
