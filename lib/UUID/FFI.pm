@@ -32,10 +32,12 @@ for objects that may be accessible beyond the local system
 my $ffi = FFI::Platypus->new( api => 1 );
 
 $ffi->lib(sub {
-  my $lib = FFI::CheckLib::find_lib(lib => 'uuid');
-  return $lib if $lib;
-  require Alien::libuuid;
-  Alien::libuuid->dynamic_libs;
+  my @lib = eval {
+    require Alien::libuuid;
+    Alien::libuuid->dynamic_libs;
+  };
+  return @lib if @lib;
+  return FFI::CheckLib::find_lib(lib => 'uuid');
 });
 
 $ffi->attach( [uuid_generate_random => '_generate_random'] => ['opaque']           => 'void'   => '$'  );
