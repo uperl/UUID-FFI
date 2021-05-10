@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.10      2021-05-10 06:53:27 -0600
   - Check for required symbols, and require
     Alien::libuuid 0.05 if an appropriate system
     lib is not found (gh#6)
