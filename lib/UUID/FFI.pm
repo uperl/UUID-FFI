@@ -34,10 +34,29 @@ my $ffi = FFI::Platypus->new( api => 1 );
 $ffi->lib(sub {
   my @lib = eval {
     require Alien::libuuid;
+    Alien::libuuid->VERSION('0.05');
     Alien::libuuid->dynamic_libs;
   };
   return @lib if @lib;
-  return FFI::CheckLib::find_lib(lib => 'uuid');
+  @lib = FFI::CheckLib::find_lib(
+    lib => 'uuid',
+    symbol => [
+      'uuid_generate_random',
+      'uuid_generate_time',
+      'uuid_unparse',
+      'uuid_parse',
+      'uuid_copy',
+      'uuid_clear',
+      'uuid_type',
+      'uuid_variant',
+      'uuid_time',
+      'uuid_is_null',
+      'uuid_compare',
+    ]
+  );
+  die "Unable to find system libuuid with required symbols.  Try installing or upgrading Alien::libuuid"
+    unless @lib;
+  return @lib;
 });
 
 $ffi->attach( [uuid_generate_random => '_generate_random'] => ['opaque']           => 'void'   => '$'  );
