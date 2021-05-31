@@ -59,17 +59,19 @@ $ffi->lib(sub {
   return @lib;
 });
 
-$ffi->attach( [uuid_generate_random => '_generate_random'] => ['opaque']           => 'void'   => '$'  );
-$ffi->attach( [uuid_generate_time   => '_generate_time']   => ['opaque']           => 'void'   => '$'  );
-$ffi->attach( [uuid_unparse         => '_unparse']         => ['opaque', 'opaque'] => 'void'   => '$$' );
-$ffi->attach( [uuid_parse           => '_parse']           => ['string', 'opaque'] => 'int'    => '$$' );
-$ffi->attach( [uuid_copy            => '_copy']            => ['opaque', 'opaque'] => 'void'   => '$$' );
-$ffi->attach( [uuid_clear           => '_clear']           => ['opaque']           => 'void'   => '$'  );
-$ffi->attach( [uuid_type            => '_type']            => ['opaque']           => 'int'    => '$'  );
-$ffi->attach( [uuid_variant         => '_variant']         => ['opaque']           => 'int'    => '$'  );
-$ffi->attach( [uuid_time            => '_time']            => ['opaque', 'opaque'] => 'time_t' => '$$' );
-$ffi->attach( [uuid_is_null         => '_is_null']         => ['opaque']           => 'int'    => '$'  );
-$ffi->attach( [uuid_compare         => '_compare']         => ['opaque', 'opaque'] => 'int'    => '$$' );
+$ffi->mangler(sub { "uuid$_[0]" });
+
+$ffi->attach( _generate_random => ['opaque']           => 'void'   );
+$ffi->attach( _generate_time   => ['opaque']           => 'void'   );
+$ffi->attach( _unparse         => ['opaque', 'opaque'] => 'void'   );
+$ffi->attach( _parse           => ['string', 'opaque'] => 'int'    );
+$ffi->attach( _copy            => ['opaque', 'opaque'] => 'void'   );
+$ffi->attach( _clear           => ['opaque']           => 'void'   );
+$ffi->attach( _type            => ['opaque']           => 'int'    );
+$ffi->attach( _variant         => ['opaque']           => 'int'    );
+$ffi->attach( _time            => ['opaque', 'opaque'] => 'time_t' );
+$ffi->attach( _is_null         => ['opaque']           => 'int'    );
+$ffi->attach( _compare         => ['opaque', 'opaque'] => 'int'    );
 
 =head1 CONSTRUCTORS
 
