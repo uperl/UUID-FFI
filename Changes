@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.11      2023-02-23 19:26:50 -0700
   - Alien::libuuid is now a prerequsite listed in META.json.  If it is not
     needed it will be removed in the configure stage instead of added if
     it is needed (gh#10)
