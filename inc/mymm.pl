@@ -2,7 +2,6 @@ package mymm;
 
 use strict;
 use warnings;
-use 5.008001;
 use ExtUtils::MakeMaker;
 use FFI::CheckLib;
 
