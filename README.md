@@ -1,4 +1,4 @@
-# UUID::FFI ![linux](https://github.com/uperl/UUID-FFI/workflows/linux/badge.svg) ![macos](https://github.com/uperl/UUID-FFI/workflows/macos/badge.svg)
+# UUID::FFI ![static](https://github.com/uperl/UUID-FFI/workflows/static/badge.svg) ![linux](https://github.com/uperl/UUID-FFI/workflows/linux/badge.svg) ![macos](https://github.com/uperl/UUID-FFI/workflows/macos/badge.svg)
 
 Universally Unique Identifiers FFI style
 
