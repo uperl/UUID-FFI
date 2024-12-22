@@ -1,2 +1,4 @@
 /UUID-FFI-*
 /.build
+*.old
+*.orig
